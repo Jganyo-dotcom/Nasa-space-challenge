@@ -64,8 +64,8 @@ export default function LandingPage({ navigate, showToast }) {
           <button
             className="btn-hero-main"
             onClick={() => {
-              navigate("dashboard");
-              showToast("Welcome to your Field Shift dashboard!", "success");
+            //   navigate("dashboard");
+              showToast("sign in!", "error");
             }}
           >
             Explore Dashboard <ArrowRight size={18} />
@@ -73,8 +73,8 @@ export default function LandingPage({ navigate, showToast }) {
           <button
             className="btn-secondary"
             onClick={() => {
-              navigate("dashboard");
-              showToast("Accessing Farmer Portal...", "info");
+            //   navigate("dashboard");
+              showToast("sign in!", "error");
             }}
           >
             Farmer Portal Log In
