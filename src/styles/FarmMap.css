@@ -1,0 +1,154 @@
+.map-page-view {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Reduced from 24px to pull grid up tightly */
+}
+
+.map-page-header h1 {
+  font-size: 26px;
+  font-weight: 800;
+  color: #f8fafc;
+  margin: 0 0 4px 0; /* Tightened underneath heading */
+}
+
+.map-page-header p {
+  color: #94a3b8;
+  font-size: 14px;
+  margin: 0;
+}
+
+.map-grid-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 16px; /* Compressed card spacing gap */
+}
+
+@media (max-width: 900px) {
+  .map-grid-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.map-canvas-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 16px 20px 20px 20px; /* Reduced top padding from 24px to lift content higher */
+}
+
+.map-canvas-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0 0 12px 0; /* Reduced margin gap under title */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.map-interactive-box {
+  height: 280px;
+  background: #090d16;
+  border: 1px dashed #334155;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: crosshair;
+  margin-bottom: 16px;
+  text-align: center;
+  padding: 16px;
+}
+
+.map-interactive-box:hover {
+  border-color: #10b981;
+}
+
+.map-preset-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-preset {
+  background: #0f172a;
+  border: 1px solid #334155;
+  color: #f8fafc;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.btn-preset:hover {
+  border-color: #10b981;
+}
+
+.farm-form-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 16px 20px 20px 20px; /* Aligned padding with canvas card */
+}
+
+.form-group-map {
+  margin-bottom: 16px;
+}
+
+.form-group-map label {
+  display: block;
+  font-size: 13px;
+  color: #94a3b8;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.form-input-map,
+.form-select-map {
+  width: 100%;
+  padding: 10px 14px;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.form-input-map:focus,
+.form-select-map:focus {
+  outline: none;
+  border-color: #10b981;
+}
+
+.coords-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.btn-save-farm {
+  width: 100%;
+  padding: 12px;
+  background: #10b981;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-save-farm:hover {
+  background: #059669;
+}
+
+/* Forces the leaflet controls to sit further back in layout priority */
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 10 !important;
+}

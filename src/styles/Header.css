@@ -1,0 +1,54 @@
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 32px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-badge {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.header-user-email {
+  color: #0f172a;
+  font-weight: 500;
+}
+
+/* On mobile, leave room at the top for the Sidebar's mobile header bar */
+@media (max-width: 1024px) {
+  .app-header {
+    padding: 12px 16px;
+    margin-top: 56px; /* Prevents header from hiding under fixed sidebar mobile bar */
+  }
+
+  .header-user-email {
+    font-size: 12px;
+  }
+}

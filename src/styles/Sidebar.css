@@ -1,0 +1,220 @@
+/* =========================================================
+   SIDEBAR & MOBILE DRAWER STYLES
+   ========================================================= */
+
+/* Desktop Fixed Sidebar */
+.sidebar-container {
+  width: 260px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #ffffff;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  box-sizing: border-box;
+  z-index: 1000;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Mobile Top Header (Pinned to absolute top) */
+.mobile-header {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0 16px;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 999;
+  box-sizing: border-box;
+}
+
+.mobile-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mobile-brand-title {
+  font-weight: 800;
+  font-size: 18px;
+  color: #0f172a;
+}
+
+.mobile-toggle-btn {
+  background: transparent;
+  border: none;
+  color: #0f172a;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+/* Dark Overlay Backdrop when Drawer is Open */
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 998;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mobile-overlay.show {
+  display: block;
+  opacity: 1;
+}
+
+/* Sidebar Internal Elements */
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.brand-icon {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 8px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.brand-tag {
+  font-size: 11px;
+  color: #059669;
+  font-weight: 600;
+}
+
+.nasa-hero-card {
+  background: linear-gradient(135deg, #064e3b 0%, #0f172a 100%);
+  border-radius: 10px;
+  padding: 14px;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.nasa-badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.nasa-pill {
+  background: rgba(52, 211, 153, 0.2);
+  color: #34d399;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #10b981;
+}
+
+.nasa-card-title {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.nasa-card-sub {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.nav-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: left;
+}
+
+.nav-button:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.nav-button.active {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.sidebar-footer {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 14px;
+}
+
+.logout-button {
+  color: #ef4444;
+}
+
+.logout-button:hover {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+/* =========================================================
+   RESPONSIVE BREAKPOINT (<= 1024px)
+   ========================================================= */
+@media (max-width: 1024px) {
+  .mobile-header {
+    display: flex; /* Show mobile bar pinned at top */
+  }
+
+  .sidebar-container {
+    transform: translateX(-100%); /* Hide sidebar off-screen on mobile */
+    top: 0;
+    height: 100vh;
+  }
+
+  .sidebar-container.mobile-open {
+    transform: translateX(0); /* Slide drawer in cleanly */
+    box-shadow: 10px 0 25px rgba(0, 0, 0, 0.15);
+  }
+}

@@ -1,0 +1,190 @@
+/* Container & Base Layout */
+.auth-root-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f1f5f9; /* Flat light gray background layout block */
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+}
+
+/* Background Glow Layer Completely Terminated to Remove AI Aesthetic */
+.auth-bg-glow {
+  display: none;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  background: #ffffff; /* Solid flat crisp white background card */
+  border: 1px solid #e2e8f0; /* Crisp light gray border line */
+  border-radius: 16px;
+  padding: 36px;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 10px 15px -3px rgba(0, 0, 0, 0.1); /* Standard layout shadows */
+  position: relative;
+  z-index: 10;
+}
+
+.auth-brand-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.brand-icon-wrapper {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 10px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f172a; /* Solid high-contrast slate text */
+  margin: 0 0 4px 0;
+  text-align: center;
+}
+
+.auth-subtitle {
+  font-size: 13px;
+  color: #475569; /* Balanced description gray text tone */
+  margin: 0 0 28px 0;
+  text-align: center;
+}
+
+.nasa-pill-tag {
+  background: #eff6ff; /* Corporate clean light sky blue tone */
+  color: #1e40af; /* Crisp corporate indigo typography */
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border: 1px solid #bfdbfe;
+}
+
+.form-group-auth {
+  margin-bottom: 18px;
+}
+
+.form-group-auth label {
+  display: block;
+  font-size: 13px;
+  color: #334155; /* Highly visible text labels */
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  color: #64748b;
+  pointer-events: none;
+}
+
+.form-input-auth {
+  width: 100%;
+  padding: 11px 14px 11px 42px;
+  background: #ffffff; /* White input background */
+  border: 1px solid #cbd5e1; /* Flat neutral border frame */
+  border-radius: 8px;
+  color: #0f172a; /* Dark reader text input field typography */
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.form-input-auth:focus {
+  outline: none;
+  border-color: #10b981; /* Brand highlight focus accent color */
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15); /* Non-blurry clean ring */
+}
+
+/* Primary Button Adjusted to Flat Style (No aggressive blurred ambient shadows) */
+.btn-auth-submit {
+  width: 100%;
+  padding: 13px;
+  background: #10b981;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08); /* Clean material elevation drop shadow */
+  margin-top: 10px;
+  transition: all 0.2s ease;
+}
+
+.btn-auth-submit:hover {
+  background: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.auth-toggle-footer {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0; /* Crisp neutral container divider line */
+  font-size: 13px;
+  color: #64748b;
+}
+
+.auth-toggle-btn {
+  background: transparent;
+  border: none;
+  color: #059669; /* Professional deep brand link green color */
+  font-weight: 700;
+  cursor: pointer;
+  margin-left: 4px;
+}
+
+.auth-toggle-btn:hover {
+  text-decoration: underline;
+}
+
+.btn-back-home {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 auto 20px auto;
+  transition: color 0.2s ease;
+}
+
+.btn-back-home:hover {
+  color: #0f172a; /* Snaps directly to bold high contrast text on hover states */
+}

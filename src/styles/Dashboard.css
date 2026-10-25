@@ -1,0 +1,141 @@
+/* Container Layout with Off-White Background */
+.dashboard-view {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background-color: #f8fafc; /* Matches main light app shell */
+  min-height: calc(100vh - 60px);
+  padding: 32px;
+  box-sizing: border-box;
+}
+
+/* Hero Section Card */
+.dashboard-hero-card {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, #ffffff 70%);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.dashboard-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 8px 0;
+}
+
+.dashboard-subtitle {
+  color: #475569;
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Metric / Stat Boxes */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.stat-box {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-top: 8px;
+}
+
+.stat-footer-tag {
+  font-size: 12px;
+  margin-top: 6px;
+  display: block;
+}
+
+/* Action Section Card */
+.action-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.action-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 8px 0;
+}
+
+.action-card-desc {
+  color: #475569;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.action-btn-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-dash-primary {
+  background: #10b981;
+  color: #ffffff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s ease;
+}
+
+.btn-dash-primary:hover {
+  background: #059669;
+}
+
+.btn-dash-secondary {
+  background: #ffffff;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-dash-secondary:hover {
+  border-color: #10b981;
+  color: #059669;
+}
+
+/* Mobile Screen Padding Adjustments */
+@media (max-width: 1024px) {
+  .dashboard-view {
+    padding: 20px 16px;
+  }
+}

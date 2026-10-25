@@ -1,0 +1,116 @@
+.climate-view {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Halved from 24px to collapse empty layout space */
+  justify-content: flex-start !important; /* Force items to sit tightly at the top */
+  align-items: stretch;
+}
+
+.climate-header {
+  margin-top: 0px !important;
+  padding-top: 0px !important;
+}
+
+.climate-header h1 {
+  font-size: 26px;
+  font-weight: 800;
+  color: #f8fafc;
+  margin: 0 0 4px 0; /* Compressed distance under page title */
+}
+
+.climate-header p {
+  color: #94a3b8;
+  font-size: 14px;
+  margin: 0;
+}
+
+.climate-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.climate-metric-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.climate-metric-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.climate-metric-val {
+  font-size: 28px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-top: 10px;
+}
+
+.climate-metric-sub {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+.sentinel-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.sentinel-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0 0 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sentinel-text {
+  color: #94a3b8;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.sentinel-code {
+  background: #0f172a;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #f43f5e;
+  font-family: monospace;
+}
+
+/* --- Responsive Mobile Overrides (Phone Screen Fixes) --- */
+@media (max-width: 900px) {
+  .climate-view {
+    gap: 8px !important; /* Minimum container compression */
+  }
+
+  .climate-header h1 {
+    font-size: 20px !important; /* Scale text cleanly down on mobile screens */
+    margin-bottom: 2px !important;
+  }
+
+  .climate-header p {
+    font-size: 13px !important;
+  }
+
+  /* Target any parent system wrappers that are throwing hidden vertical layout rows */
+  .dashboard-page-container,
+  .main-content-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important; /* Prevents vertical stretching completely */
+    gap: 4px !important; /* Forces layout layers to snap flush to one another */
+  }
+}

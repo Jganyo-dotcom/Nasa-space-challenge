@@ -1,0 +1,151 @@
+.ai-view {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Halved from 24px to instantly lift layout cards upward */
+}
+
+.ai-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px; /* Compressed flex row wrapping gap */
+  margin-top: 0px !important;
+  padding-top: 0px !important;
+}
+
+.ai-header h1 {
+  font-size: 26px;
+  font-weight: 800;
+  color: #f8fafc;
+  margin: 0 0 4px 0; /* Tightened under header heading */
+}
+
+.ai-header p {
+  color: #94a3b8;
+  font-size: 14px;
+  margin: 0;
+}
+
+.btn-run-ml {
+  background: #10b981;
+  color: #ffffff;
+  border: none;
+  padding: 10px 18px; /* Slightly compacted padding */
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s ease;
+}
+
+.btn-run-ml:hover {
+  background: #059669;
+}
+
+.ai-strategy-card {
+  background: linear-gradient(135deg, #064e3b 0%, #1e293b 70%);
+  border: 1px solid #10b981;
+  border-radius: 12px;
+  padding: 24px; /* Optimized layout box width */
+}
+
+.ai-tag-label {
+  color: #34d399;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.rotation-flow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.rotation-box {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid #334155;
+  padding: 10px 16px;
+  border-radius: 8px;
+}
+
+.rotation-box span:first-child {
+  font-size: 11px;
+  color: #94a3b8;
+  display: block;
+}
+
+.rotation-box span:last-child {
+  font-size: 18px;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.rotation-box.highlight {
+  background: #10b981;
+  border-color: #10b981;
+}
+
+.rotation-box.highlight span:first-child {
+  color: #a7f3d0;
+}
+
+.rotation-box.highlight span:last-child {
+  color: #ffffff;
+}
+
+.ai-reasoning-text {
+  color: #e2e8f0;
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.ai-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.ai-metric-box {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.ai-metric-box span {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.ai-metric-box div {
+  font-size: 26px;
+  font-weight: 800;
+  margin-top: 8px;
+}
+
+/* --- Responsive Mobile Viewport Snapping --- */
+@media (max-width: 900px) {
+  .ai-view {
+    gap: 8px !important; /* Forces elements to sit closely together */
+  }
+
+  .ai-header h1 {
+    font-size: 20px !important; /* Scale text down on phone displays */
+    margin-bottom: 2px !important;
+  }
+
+  .ai-header p {
+    font-size: 13px !important;
+  }
+}
