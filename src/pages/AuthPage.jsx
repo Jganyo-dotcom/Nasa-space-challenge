@@ -9,15 +9,18 @@ import {
   UserPlus,
   MapPin,
   Loader2,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import "../styles/AuthPage.css";
 
 // const API_BASE_URL = "http://localhost:5000/api";
-const API_BASE_URL = "https://nasa-space-challenge-backend.onrender.com/api"
+const API_BASE_URL = "https://nasa-space-challenge-backend.onrender.com/api";
 
 export default function AuthPage({ navigate, showToast, onAuthSuccess }) {
   const [isRegistering, setIsRegistering] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   // Form Field State
   const [fullName, setFullName] = useState("");
@@ -147,16 +150,37 @@ export default function AuthPage({ navigate, showToast, onAuthSuccess }) {
 
           <div className="form-group-auth">
             <label>Password</label>
-            <div className="input-with-icon">
+            <div className="input-with-icon" style={{ position: "relative" }}>
               <Lock size={18} className="input-icon" />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 className="form-input-auth"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                style={{ paddingRight: "40px" }}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: "absolute",
+                  right: "12px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  color: "#64748b",
+                  display: "flex",
+                  alignItems: "center",
+                  padding: 0,
+                }}
+                title={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
           </div>
 
