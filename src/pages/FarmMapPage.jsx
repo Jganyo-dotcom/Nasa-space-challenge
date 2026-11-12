@@ -7,56 +7,146 @@ import {
   Marker,
   Popup,
   useMapEvents,
+  useMap,
 } from "react-leaflet";
-import { MapPin, Sliders } from "lucide-react";
+import { MapPin, Sliders, Loader2 } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import "../styles/FarmMap.css";
 
+// const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "https://nasa-space-challenge-backend.onrender.com/api"
+
+
+// 1. Helper component to smoothly center/fly the map when coordinates change
+function MapFlyTo({ lat, lng }) {
+  const map = useMap();
+  React.useEffect(() => {
+    const pLat = parseFloat(lat);
+    const pLng = parseFloat(lng);
+    if (!isNaN(pLat) && !isNaN(pLng)) {
+      map.flyTo([pLat, pLng], map.getZoom(), { duration: 0.8 });
+    }
+  }, [lat, lng, map]);
+  return null;
+}
+
+// 2. FIXED: Extracted OUTSIDE the main component to prevent stale closures.
+function MapClickHandler({
+  setTempLat,
+  setTempLng,
+  setLocationName,
+  showToast,
+}) {
+  useMapEvents({
+    click(e) {
+      const clickedLat = e.latlng.lat.toFixed(6);
+      const clickedLng = e.latlng.lng.toFixed(6);
+
+      setTempLat(clickedLat);
+      setTempLng(clickedLng);
+      setLocationName(`Pinned Location [${clickedLat}, ${clickedLng}]`);
+
+      if (showToast) {
+        showToast(
+          `Pinned! Lat: ${clickedLat}, Lng: ${clickedLng} filled into form.`,
+          "info",
+        );
+      }
+    },
+  });
+  return null;
+}
+
 export default function FarmMapPage({ navigate, showToast }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-  // Define default values locally inside the component state now
-  const [tempLat, setTempLat] = useState(5.6037);
-  const [tempLng, setTempLng] = useState(-0.187);
+  // Form states as strings to prevent input desync
+  const [tempLat, setTempLat] = useState("5.6037");
+  const [tempLng, setTempLng] = useState("-0.1870");
   const [tempCrop, setTempCrop] = useState("Maize");
   const [tempSize, setTempSize] = useState("2.5");
   const [locationName, setLocationName] = useState("Accra Test Field");
 
-  // Map Click Component Handler to capture exact coordinate picks
-  function MapClickHandler() {
-    useMapEvents({
-      click(e) {
-        setTempLat(e.latlng.lat.toFixed(4));
-        setTempLng(e.latlng.lng.toFixed(4));
-        showToast(
-          `Pin dropped at Lat: ${e.latlng.lat.toFixed(4)}, Lng: ${e.latlng.lng.toFixed(4)}`,
-          "info",
-        );
-      },
-    });
-    return null;
-  }
-
   const handlePreset = (name, lat, lng) => {
-    setTempLat(lat);
-    setTempLng(lng);
+    setTempLat(lat.toString());
+    setTempLng(lng.toString());
     setLocationName(name);
-    showToast(`Selected location preset: ${name}`, "info");
+
+    if (showToast) {
+      showToast(`Selected location preset: ${name}`, "info");
+    }
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    setLocationName("Custom Pinned Field");
-    showToast(
-      "Farm configurations and profile details saved successfully!",
-      "success",
-    );
+    setIsSaving(true);
+
+    const parsedLat = parseFloat(tempLat);
+    const parsedLng = parseFloat(tempLng);
+
+    if (isNaN(parsedLat) || isNaN(parsedLng)) {
+      if (showToast) {
+        showToast(
+          "Please enter valid numeric latitude and longitude coordinates.",
+          "error",
+        );
+      }
+      setIsSaving(false);
+      return;
+    }
+
+    const token = localStorage.getItem("field_shift_token");
+
+    try {
+      sessionStorage.removeItem("field_shift_ai_cache");
+
+      const response = await fetch(`${API_BASE_URL}/farm`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          locationName,
+          lat: parsedLat,
+          lng: parsedLng,
+          currentCrop: tempCrop,
+          fieldSize: parseFloat(tempSize) || 2.5,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Failed to update farm telemetry.");
+      }
+
+      if (showToast) {
+        showToast(
+          "Farm coordinates saved! Running NASA satellite analysis & AI prediction...",
+          "success",
+        );
+      }
+
+      navigate("recommendations");
+    } catch (err) {
+      if (showToast) showToast(err.message, "error");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleLogout = () => {
+    sessionStorage.clear();
+    localStorage.removeItem("field_shift_token");
+    localStorage.removeItem("field_shift_user");
     navigate("landing");
-    showToast("Signed out successfully.", "info");
+    if (showToast) showToast("Signed out successfully.", "info");
   };
+
+  const numericLat = parseFloat(tempLat) || 5.6037;
+  const numericLng = parseFloat(tempLng) || -0.187;
 
   return (
     <div className="app-layout">
@@ -69,15 +159,15 @@ export default function FarmMapPage({ navigate, showToast }) {
       />
 
       <div className="main-content-wrapper">
-        <Header userEmail="elikemejay@gmail.com" />
+        <Header userEmail="farmer@spaceapps.org" />
 
         <main className="dashboard-page-container">
           <div className="map-page-view">
             <div className="map-page-header">
               <h1>Farm Map & Coordinate Selector</h1>
               <p>
-                Click directly on the interactive map surface or select a preset
-                region to query NASA POWER agroclimate variables.
+                Click anywhere on the interactive map to automatically populate
+                your latitude and longitude form fields.
               </p>
             </div>
 
@@ -88,7 +178,6 @@ export default function FarmMapPage({ navigate, showToast }) {
                   Canvas
                 </h3>
 
-                {/* Leaflet Map Integration */}
                 <div
                   style={{
                     height: "380px",
@@ -99,19 +188,25 @@ export default function FarmMapPage({ navigate, showToast }) {
                   }}
                 >
                   <MapContainer
-                    center={[parseFloat(tempLat), parseFloat(tempLng)]}
+                    center={[numericLat, numericLng]}
                     zoom={11}
                     style={{ height: "100%", width: "100%" }}
-                    key={`${tempLat}-${tempLng}`} // Key guarantees map updates instantly on preset clicks
                   >
                     <TileLayer
                       attribution='&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
-                    <MapClickHandler />
-                    <Marker
-                      position={[parseFloat(tempLat), parseFloat(tempLng)]}
-                    >
+                    <MapFlyTo lat={numericLat} lng={numericLng} />
+
+                    {/* 3. Passing state setters explicitly */}
+                    <MapClickHandler
+                      setTempLat={setTempLat}
+                      setTempLng={setTempLng}
+                      setLocationName={setLocationName}
+                      showToast={showToast}
+                    />
+
+                    <Marker position={[numericLat, numericLng]}>
                       <Popup>
                         <strong>{tempCrop} Field</strong>
                         <br />
@@ -125,9 +220,7 @@ export default function FarmMapPage({ navigate, showToast }) {
                   <button
                     type="button"
                     className="btn-preset"
-                    onClick={() =>
-                      handlePreset("Accra, Ghana", "5.6037", "-0.1870")
-                    }
+                    onClick={() => handlePreset("Accra, Ghana", 5.6037, -0.187)}
                   >
                     Accra, Ghana
                   </button>
@@ -135,19 +228,19 @@ export default function FarmMapPage({ navigate, showToast }) {
                     type="button"
                     className="btn-preset"
                     onClick={() =>
-                      handlePreset("Nairobi, Kenya", "-1.2921", "36.8219")
+                      handlePreset("Kumasi, Ghana", 6.6885, -1.6244)
                     }
                   >
-                    Nairobi, Kenya
+                    Kumasi, Ghana
                   </button>
                   <button
                     type="button"
                     className="btn-preset"
                     onClick={() =>
-                      handlePreset("Kumasi, Ghana", "6.6885", "-1.6244")
+                      handlePreset("Tamale, Ghana", 9.4072, -0.8532)
                     }
                   >
-                    Kumasi, Ghana
+                    Tamale, Ghana
                   </button>
                 </div>
               </div>
@@ -174,42 +267,58 @@ export default function FarmMapPage({ navigate, showToast }) {
                   </div>
 
                   <div className="form-group-map">
-                    <label>Field Size (Hectares)</label>
+                    <label>Location Name</label>
                     <input
-                      type="number"
-                      step="0.1"
+                      type="text"
                       className="form-input-map"
-                      value={tempSize}
-                      onChange={(e) => setTempSize(e.target.value)}
-                      required
+                      value={locationName}
+                      onChange={(e) => setLocationName(e.target.value)}
                     />
                   </div>
 
-                  <div className="coords-row">
-                    <div>
-                      <label>Latitude</label>
-                      <input
-                        type="text"
-                        className="form-input-map"
-                        value={tempLat}
-                        readOnly
-                        style={{ background: "#090d16", color: "#94a3b8" }}
-                      />
-                    </div>
-                    <div>
-                      <label>Longitude</label>
-                      <input
-                        type="text"
-                        className="form-input-map"
-                        value={tempLng}
-                        readOnly
-                        style={{ background: "#090d16", color: "#94a3b8" }}
-                      />
-                    </div>
+                  <div className="form-group-map">
+                    <label>Latitude</label>
+                    <input
+                      type="text"
+                      className="form-input-map"
+                      value={tempLat}
+                      onChange={(e) => setTempLat(e.target.value)}
+                    />
                   </div>
 
-                  <button type="submit" className="btn-save-farm">
-                    Save Farm Configuration
+                  <div className="form-group-map">
+                    <label>Longitude</label>
+                    <input
+                      type="text"
+                      className="form-input-map"
+                      value={tempLng}
+                      onChange={(e) => setTempLng(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="form-group-map">
+                    <label>Field Size (Hectares)</label>
+                    <input
+                      type="text"
+                      className="form-input-map"
+                      value={tempSize}
+                      onChange={(e) => setTempSize(e.target.value)}
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="btn-save-farm"
+                    disabled={isSaving}
+                  >
+                    {isSaving ? (
+                      <>
+                        <Loader2 className="animate-spin" size={16} /> Saving
+                        Farm Telemetry...
+                      </>
+                    ) : (
+                      "Save Farm Telemetry"
+                    )}
                   </button>
                 </form>
               </div>

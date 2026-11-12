@@ -31,7 +31,7 @@ export default function ClimateDataPage({ navigate, showToast }) {
       />
 
       <div className="main-content-wrapper">
-        <Header userEmail="elikemejay@gmail.com" />
+        <Header userEmail="farmer@nasa-spaceapps.org" />
 
         <main className="dashboard-page-container">
           <div className="climate-view">

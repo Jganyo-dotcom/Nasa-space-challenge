@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import AuthPage from "./pages/AuthPage";
@@ -9,25 +9,24 @@ import AiRecommendationsPage from "./pages/AiRecommendationsPage";
 import { CheckCircle2, AlertCircle, Info, X } from "lucide-react";
 import "./App.css";
 
+// 1. FIXED: ProtectedRoute defined OUTSIDE the App component
+function ProtectedRoute({ isAuthenticated, children }) {
+  if (!isAuthenticated) {
+    return <Navigate to="/auth" replace />;
+  }
+  return children;
+}
+
 export default function App() {
   const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // Toggle to simulate auth
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [toast, setToast] = useState(null);
 
-  // Global Toast Dispatcher
-  const showToast = (message, type = "success") => {
+  // 2. Memoized showToast with useCallback (stabilizes map click event listeners)
+  const showToast = useCallback((message, type = "success") => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 3500);
-  };
-
-  // Protected Route Interceptor Guard
-  const ProtectedRoute = ({ children }) => {
-    if (!isAuthenticated) {
-      showToast("Authentication required. Please sign in.", "error");
-      return <Navigate to="/auth" replace />;
-    }
-    return children;
-  };
+  }, []);
 
   return (
     <div className="app-root">
@@ -68,7 +67,7 @@ export default function App() {
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
               <DashboardPage navigate={navigate} showToast={showToast} />
             </ProtectedRoute>
           }
@@ -76,7 +75,7 @@ export default function App() {
         <Route
           path="/map"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
               <FarmMapPage navigate={navigate} showToast={showToast} />
             </ProtectedRoute>
           }
@@ -84,7 +83,7 @@ export default function App() {
         <Route
           path="/climate"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
               <ClimateDataPage navigate={navigate} showToast={showToast} />
             </ProtectedRoute>
           }
@@ -92,7 +91,7 @@ export default function App() {
         <Route
           path="/recommendations"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
               <AiRecommendationsPage
                 navigate={navigate}
                 showToast={showToast}

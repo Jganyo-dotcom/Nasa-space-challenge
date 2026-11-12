@@ -4,26 +4,28 @@ import {
   Mail,
   Lock,
   User,
-  Globe,
   ArrowLeft,
   LogIn,
   UserPlus,
   MapPin,
-  Wheat,
+  Loader2,
 } from "lucide-react";
 import "../styles/AuthPage.css";
 
-export default function AuthPage({ navigate, showToast }) {
+// const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "https://nasa-space-challenge-backend.onrender.com/api"
+
+export default function AuthPage({ navigate, showToast, onAuthSuccess }) {
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Form Field State
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [region, setRegion] = useState("Accra, Ghana");
-  const [primaryCrop, setPrimaryCrop] = useState("Maize");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
@@ -31,20 +33,55 @@ export default function AuthPage({ navigate, showToast }) {
       return;
     }
 
-    if (isRegistering) {
-      showToast(
-        `Welcome to Field Shift, ${fullName || "Farmer"}! Account created successfully.`,
-        "success",
-      );
-    } else {
-      showToast(
-        "Successfully signed in to NASA Agroclimate Portal.",
-        "success",
-      );
-    }
+    setIsLoading(true);
 
-    // Direct user straight into the dashboard
-    navigate("dashboard");
+    const endpoint = isRegistering ? "/auth/register" : "/auth/login";
+    const payload = isRegistering
+      ? { email, password, name: fullName, region }
+      : { email, password };
+
+    try {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(
+          data.error || "Authentication failed. Please check your credentials.",
+        );
+      }
+
+      // Store JWT token and user details in localStorage
+      localStorage.setItem("field_shift_token", data.token);
+      localStorage.setItem("field_shift_user", JSON.stringify(data.user));
+
+      if (onAuthSuccess) {
+        onAuthSuccess(data.user, data.token);
+      }
+
+      if (isRegistering) {
+        showToast(
+          `Welcome to Field Shift, ${data.user.name || "Farmer"}! Account created.`,
+          "success",
+        );
+      } else {
+        showToast(
+          "Successfully signed in to NASA Agroclimate Portal.",
+          "success",
+        );
+      }
+
+      // Navigate to Dashboard upon successful authentication
+      navigate("dashboard");
+    } catch (err) {
+      showToast(err.message, "error");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -52,7 +89,7 @@ export default function AuthPage({ navigate, showToast }) {
       <div className="auth-bg-glow" />
 
       <div className="auth-card">
-        {/* Back to Landing Page Button */}
+        {/* Back Button */}
         <button className="btn-back-home" onClick={() => navigate("landing")}>
           <ArrowLeft size={16} /> Back to Field Shift Landing
         </button>
@@ -123,46 +160,33 @@ export default function AuthPage({ navigate, showToast }) {
             </div>
           </div>
 
-          {/* Registration Extra Fields for Farm Setup */}
+          {/* Registration Extra Field for Region Setup */}
           {isRegistering && (
-            <>
-              <div className="form-group-auth">
-                <label>Primary Agricultural Region</label>
-                <div className="input-with-icon">
-                  <MapPin size={18} className="input-icon" />
-                  <input
-                    type="text"
-                    className="form-input-auth"
-                    placeholder="Accra, Ghana"
-                    value={region}
-                    onChange={(e) => setRegion(e.target.value)}
-                  />
-                </div>
+            <div className="form-group-auth">
+              <label>Primary Agricultural Region</label>
+              <div className="input-with-icon">
+                <MapPin size={18} className="input-icon" />
+                <input
+                  type="text"
+                  className="form-input-auth"
+                  placeholder="Accra, Ghana"
+                  value={region}
+                  onChange={(e) => setRegion(e.target.value)}
+                />
               </div>
-
-              <div className="form-group-auth">
-                <label>Primary Cultivated Crop</label>
-                <div className="input-with-icon">
-                  <Wheat size={18} className="input-icon" />
-                  <select
-                    className="form-input-auth"
-                    value={primaryCrop}
-                    onChange={(e) => setPrimaryCrop(e.target.value)}
-                    style={{ paddingLeft: "42px" }}
-                  >
-                    <option value="Maize">Maize</option>
-                    <option value="Sorghum">Sorghum</option>
-                    <option value="Millet">Millet</option>
-                    <option value="Soybean">Soybean</option>
-                    <option value="Cowpea">Cowpea</option>
-                  </select>
-                </div>
-              </div>
-            </>
+            </div>
           )}
 
-          <button type="submit" className="btn-auth-submit">
-            {isRegistering ? (
+          <button
+            type="submit"
+            className="btn-auth-submit"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <Loader2 size={18} className="animate-spin" /> Authenticating...
+              </>
+            ) : isRegistering ? (
               <>
                 <UserPlus size={18} /> Register & Launch Dashboard
               </>
@@ -178,8 +202,9 @@ export default function AuthPage({ navigate, showToast }) {
         <div className="auth-toggle-footer">
           {isRegistering ? (
             <span>
-              Already registered?
+              Already registered?{" "}
               <button
+                type="button"
                 className="auth-toggle-btn"
                 onClick={() => setIsRegistering(false)}
               >
@@ -188,8 +213,9 @@ export default function AuthPage({ navigate, showToast }) {
             </span>
           ) : (
             <span>
-              New to Field Shift?
+              New to Field Shift?{" "}
               <button
+                type="button"
                 className="auth-toggle-btn"
                 onClick={() => setIsRegistering(true)}
               >
