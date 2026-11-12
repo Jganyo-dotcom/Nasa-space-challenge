@@ -12,12 +12,12 @@ import {
 import "../styles/AiRecommendations.css";
 
 // const API_BASE_URL = "http://localhost:5000/api";
-const API_BASE_URL = "https://nasa-space-challenge-backend.onrender.com/api"
-
+const API_BASE_URL = "https://nasa-space-challenge-backend.onrender.com/api";
 
 export default function AiRecommendationsPage({ navigate, showToast }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [userEmail, setUserEmail] = useState("farmer@spaceapps.org");
 
   const [farmData, setFarmData] = useState({
     currentCrop: "Maize",
@@ -42,6 +42,18 @@ export default function AiRecommendationsPage({ navigate, showToast }) {
   });
 
   useEffect(() => {
+    // Load user email/username from local storage
+    const storedUser = localStorage.getItem("field_shift_user");
+    if (storedUser) {
+      try {
+        const parsed = JSON.parse(storedUser);
+        if (parsed.email) setUserEmail(parsed.email);
+        else if (parsed.name) setUserEmail(parsed.name);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
     // Check if we already fetched this session to prevent remount loops
     const cachedData = sessionStorage.getItem("field_shift_ai_cache");
     if (cachedData) {
@@ -140,7 +152,7 @@ export default function AiRecommendationsPage({ navigate, showToast }) {
       />
 
       <div className="main-content-wrapper">
-        <Header userEmail="farmer@spaceapps.org" />
+        <Header userEmail={userEmail} />
 
         <main
           className="dashboard-page-container"

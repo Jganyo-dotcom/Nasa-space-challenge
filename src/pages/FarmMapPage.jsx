@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import {
@@ -13,14 +13,12 @@ import { MapPin, Sliders, Loader2 } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import "../styles/FarmMap.css";
 
-// const API_BASE_URL = "http://localhost:5000/api";
-const API_BASE_URL = "https://nasa-space-challenge-backend.onrender.com/api"
-
+const API_BASE_URL = "https://nasa-space-challenge-backend.onrender.com/api";
 
 // 1. Helper component to smoothly center/fly the map when coordinates change
 function MapFlyTo({ lat, lng }) {
   const map = useMap();
-  React.useEffect(() => {
+  useEffect(() => {
     const pLat = parseFloat(lat);
     const pLng = parseFloat(lng);
     if (!isNaN(pLat) && !isNaN(pLng)) {
@@ -30,7 +28,7 @@ function MapFlyTo({ lat, lng }) {
   return null;
 }
 
-// 2. FIXED: Extracted OUTSIDE the main component to prevent stale closures.
+// 2. Extracted outside the main component to prevent stale closures
 function MapClickHandler({
   setTempLat,
   setTempLng,
@@ -60,6 +58,7 @@ function MapClickHandler({
 export default function FarmMapPage({ navigate, showToast }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [userEmail, setUserEmail] = useState("farmer@spaceapps.org");
 
   // Form states as strings to prevent input desync
   const [tempLat, setTempLat] = useState("5.6037");
@@ -67,6 +66,57 @@ export default function FarmMapPage({ navigate, showToast }) {
   const [tempCrop, setTempCrop] = useState("Maize");
   const [tempSize, setTempSize] = useState("2.5");
   const [locationName, setLocationName] = useState("Accra Test Field");
+
+  const hasFetchedRef = useRef(false);
+
+  // Fetch user's existing farm telemetry on mount
+  const fetchDashboardData = async () => {
+    const token = localStorage.getItem("field_shift_token");
+    if (!token) return;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/farm`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+
+      if (response.ok && data.success && data.farmDetails) {
+        const { coordinates, locationName, currentCrop, fieldSize } =
+          data.farmDetails;
+        if (coordinates) {
+          setTempLat(coordinates.lat.toString());
+          setTempLng(coordinates.lng.toString());
+        }
+        if (locationName) setLocationName(locationName);
+        if (currentCrop) setTempCrop(currentCrop);
+        if (fieldSize)
+          setTempSize(fieldSize.toString().replace(" Hectares", ""));
+      }
+    } catch (err) {
+      console.error("Failed to load existing farm telemetry:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (hasFetchedRef.current) return;
+    hasFetchedRef.current = true;
+
+    // Load user email/username from local storage
+    const storedUser = localStorage.getItem("field_shift_user");
+    if (storedUser) {
+      try {
+        const parsed = JSON.parse(storedUser);
+        if (parsed.email) setUserEmail(parsed.email);
+        else if (parsed.name) setUserEmail(parsed.name);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    fetchDashboardData();
+  }, []);
 
   const handlePreset = (name, lat, lng) => {
     setTempLat(lat.toString());
@@ -159,7 +209,7 @@ export default function FarmMapPage({ navigate, showToast }) {
       />
 
       <div className="main-content-wrapper">
-        <Header userEmail="farmer@spaceapps.org" />
+        <Header userEmail={userEmail} />
 
         <main className="dashboard-page-container">
           <div className="map-page-view">
@@ -198,7 +248,6 @@ export default function FarmMapPage({ navigate, showToast }) {
                     />
                     <MapFlyTo lat={numericLat} lng={numericLng} />
 
-                    {/* 3. Passing state setters explicitly */}
                     <MapClickHandler
                       setTempLat={setTempLat}
                       setTempLng={setTempLng}
